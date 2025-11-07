@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tradiția - Produse din Carne și Pește, Proaspete și Afumate, Direct de la Producător în Northampton</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+
+<script>
+    // Configurație Tailwind CSS cu culori personalizate și animații
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'primary-dark': '#262626', // Gri cărbune închis (fundal, similar cu referința)
+                    'accent-warm': '#B91C1C', // Roșu vișiniu, evocând carne și pasiune
+                    'text-light': '#F5F5F5', // Text alb murdar
+                    'secondary-maro': '#4E342E', // Maro închis, pentru lemn/afumare
+                    'image-placeholder-bg': '#4E342E', // Culoare uniformă pentru fundalul imaginilor placeholder
+                },
+                fontFamily: {
+                    // Fontul standard pentru textul general
+                    sans: ['Inter', 'sans-serif'],
+                    // Fontul clasic, de tip Trajan, pentru branding-ul "Tradiția"
+                    traditia: ['Georgia', 'serif', 'Times New Roman'],
+                },
+                keyframes: {
+                    // Keyframe pentru efectul 'flash' la titlu
+                    'title-flash': {
+                        '0%, 100%': { 'text-shadow': '0 0 10px rgba(185, 28, 28, 0.7)' },
+                        '50%': { 'text-shadow': '0 0 20px rgba(185, 28, 28, 1)' },
+                    },
+                    // KEYFRAME PENTRU SIMBOLUL LIREI - Efect subtil de NEON/GLOW care pulsează
+                    /*'pound-glow': {
+                        '0%, 100%': { 
+                            'text-shadow': '0 0 10px #F5F5F5, 0 0 20px rgba(255, 215, 0, 0.4)', 
+                            color: '#F5F5F5' 
+                        },
+                        '50%': { 
+                            'text-shadow': '0 0 15px #FFD700, 0 0 35px #B91C1C, 0 0 50px #B91C1C', 
+                            color: '#FFD700' 
+                        },
+                    }*/
+                },
+                /*animation: {
+                    'title-flash': 'title-flash 2s ease-in-out infinite',
+                    'pound-glow': 'pound-glow 1.5s ease-in-out infinite', // Animație nouă
+                }*/
+            }
+        }
+    }
+</script>
+    <style>
+        /* Asigurarea unui fundal si font consistent pe tot ecranul */
+        body {
+            background-color: #d3d3d3;
+            color: #F5F5F5;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Stil pentru secțiunea de banner principal */
+        #hero {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden; /* Ascunde imaginile în exces */
+        }
+        
+        /* Containerul pentru imaginile slideshow-ului - Acum 45/65 % */
+        .hero-slideshow .slide-item {
+            position: absolute;
+            top: 50%; /* Centrare verticală */
+            left: 50%; /* Centrare orizontală */
+            transform: translate(-50%, -50%); /* Ajustare pentru mărimea proprie (centrare perfectă) */
+            width: 45%; 
+            height: 65%; 
+            opacity: 0; 
+            transition: opacity 1.5s ease-in-out; 
+            z-index: 1;
+        }
+        .hero-slideshow .slide-item.active {
+            opacity: 1;
+        }
+
+        .hero-slideshow .slide-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Umple zona, tăind dacă e necesar, pentru un fundal imersiv */
+        }
+        
+        /* Overlay semi-transparent pentru lizibilitatea textului PESTE carusel */
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.55); 
+            /*backdrop-filter: blur(1px);*/
+            z-index: 2; 
+        }
+
+        /* LOGOURI LATERALE - MODIFICĂRI CRITICE PENTRU RESPONSIVITATE */
+        .side-logo {
+            position: absolute;
+            top: 50%; 
+            transform: translateY(-50%);
+            z-index: 3; 
+            width: 500px; /* Dimensiunea implicită (desktop mare) */
+            height: auto;
+            opacity: 1; 
+            transition: width 0.3s, opacity 0.3s;
+        }
+        .side-logo-left {
+            left: 20px;
+        }
+        .side-logo-right {
+            right: 20px;
+        }
+        
+        /* Ajustări pentru dispozitivele medii (tablete și desktop redimensionat) */
+        @media (max-width: 1280px) {
+             .side-logo {
+                width: 300px; /* Micșorare logo pentru a face loc textului */
+                opacity: 0.8;
+            }
+        }
+        /* Ajustări pentru dispozitivele mici (mobil landscape și tablete mici) */
+        @media (max-width: 1024px) {
+             .side-logo {
+                width: 200px; /* Micșorare și mai mult */
+                opacity: 0.6;
+            }
+            /* Ne asigurăm că slideshow-ul acoperă mai mult fundal, dar nu intră în conflict */
+            .hero-slideshow .slide-item {
+                width: 55%; 
+                height: 75%; 
+            }
+        }
+        /* Ascunde logourile laterale pe dispozitivele mobile (sub 768px), pentru a nu aglomera */
+        @media (max-width: 768px) {
+            .side-logo {
+                display: none;
+            }
+            /* Pe mobil, slideshow-ul poate fi mai mare, ca background */
+            .hero-slideshow .slide-item {
+                width: 80%; 
+                height: 90%; 
+            }
+        }
+
+
+        /* Poziționarea textului și a butoanelor DEASUPRA caruselului, overlay-ului și logourilor laterale */
+        .hero-content {
+            z-index: 4;
+            /* CORECTAT: Lățime maximă setată pentru a nu se întinde prea mult pe ecranele foarte mari,
+                       dar lăsată la 'max-w-4xl' (Tailwind) pentru a se adapta fluid.
+                       Pe desktop, acesta va fi centrat și marginile laterale îl vor proteja de logo-uri. */
+            width: 90%; /* Asigură că folosește lățimea disponibilă */
+        }
+
+        /* Stil specific pentru simbolul £ animat: FONT-SIZE MARE și GLOW */
+        /*.pound-symbol {
+            display: inline-block; 
+            font-size: 3rem; 
+            line-height: 1; 
+            margin-left: 16px; 
+            animation: pound-glow 1.5s ease-in-out infinite; 
+            font-weight: 900; 
+        }*/
+
+        /* CAPTION CORECTAT: Lățime 50% pe desktop, 75% pe mobil, Poziție 50px de la bază */
+        .slide-caption {
+/*            position: absolute;*/
+            position: relative;
+            /* Am coborât caption-ul sub linia de jos a slide-ului pentru a nu aglomera,
+               urmând să îl poziționăm vizibil folosind un z-index mai mare */
+/*            bottom: -200px; */
+            bottom: 0%; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%; 
+            max-width: 1000px; 
+            background-color: rgba(0, 0, 0, 0.85); 
+            color: #F5F5F5;
+            padding: 0.75rem 1rem; 
+            text-align: center; 
+            border-radius: 8px; 
+            z-index: 5; 
+            display: block; 
+            /* Se mișcă în sus pe ecrane mai mici */
+        }
+        /* Ajustare lățime caption pentru mobil */
+        @media (max-width: 640px) {
+            .slide-caption {
+                width: 90%; /* Lățime mărită pe dispozitivele mobile */
+                bottom: 20px; /* Coborât puțin pentru a nu acoperi butoanele */
+            }
+            .slide-caption h3 {
+                font-size: 1.25rem; /* Micșorat pe mobil */
+            }
+            .slide-caption p {
+                font-size: 1rem; /* Micșorat pe mobil */
+            }
+        }
+        
+        @media (min-width: 768px) {
+            /* Repozitioneaza caption-ul mai sus pentru a fi vizibil pe desktop */
+            .slide-caption {
+ /*               bottom: 50px; */
+            }
+        }
+        
+        .slide-caption h3 {
+            font-size: 1.45rem; 
+            font-weight: bold;
+            margin-bottom: 0.25rem; 
+        }
+        .slide-caption p {
+            font-size: 1.15rem; 
+            line-height: 1.3; 
+            font-weight: 500; 
+            text-shadow: none; 
+        }
+
+        /* Stil pentru logo-ul din header și footer */
+        .header-logo {
+            width: 120px; /* Dimensiune adecvată pentru header */
+            height: auto;
+            margin-right: 8px; /* Spațiu între logo și text (dacă e cazul) */
+            filter: drop-shadow(0 0 2px rgba(245, 245, 245, 0.5)); /* Umbră subtilă albă */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Antet și Navigare -->
+    <header class="bg-primary-dark shadow-lg sticky top-0 z-10 border-b border-accent-warm/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <!-- LOGO: TRADITIA - ACUM INCLUDE IMAGINEA -->
+            <div class="flex items-center text-2xl font-traditia font-bold text-text-light">
+                <img src="traditia.jfif" alt="Logo Tradiția" class="header-logo"> <!-- LOGO REINTRODUS -->
+                TRADIȚIA
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#" class="text-text-light hover:text-accent-warm transition duration-200">Acasă</a>
+                <a href="#" class="text-text-light hover:text-accent-warm transition duration-200">Produse Afumate</a>
+                <a href="#" class="text-text-light hover:text-accent-warm transition duration-200">Patiserie</a>
+                <a href="#" class="text-text-light hover:text-accent-warm transition duration-200">Despre Noi</a>
+                <a href="#" class="text-accent-warm font-semibold border border-accent-warm px-3 py-1 rounded-full hover:bg-accent-warm hover:text-primary-dark transition duration-200">Comandă</a>
+            </nav>
+            <!-- Meniu Mobil (Icon SVG) -->
+            <button class="md:hidden text-text-light focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Secțiunea Principală (Hero) - Impact Maxim CU SLIDESHOW -->
+    <section id="hero" class="relative">
+        
+        <!-- LOGO 1 (Stânga) - DEVINE MAI MIC PE ECRANE MEDII -->
+        <img src="traditia.jfif" alt="Logo Tradiția" class="side-logo side-logo-left hidden md:block">
+        
+        <!-- LOGO 2 (Dreapta) - DEVINE MAI MIC PE ECRANE MEDII -->
+        <img src="traditia.jfif" alt="Logo Tradiția" class="side-logo side-logo-right hidden md:block">
+
+        <!-- Containerul Slideshow-ului (100% din ecran, centrat) -->
+        <div class="hero-slideshow absolute inset-0">
+            <!-- Fiecare imagine este acum într-un 'slide-item' cu text la bază -->
+            <!-- 1. Cârnați Afumați -->
+            <div class="slide-item active">
+                <img src="carnati afumati traditionali.jfif" alt="Cârnați Afumați Tradiționali">
+                <!-- CAPTION MODIFICAT -->
+                <div class="slide-caption">
+                    <h3>Cârnați Afumați Tradiționali</h3>
+                    <p>Rețete autentice moldovenești, afumați lent pentru un gust inconfundabil.</p>
+                </div>
+            </div>
+            
+            <!-- 2. File de Pește Afumat -->
+            <div class="slide-item">
+                <img src="File de Peste Afumat.jfif" alt="File de Pește Afumat">
+                <!-- CAPTION MODIFICAT -->
+                <div class="slide-caption">
+                    <h3>File de Pește Afumat</h3>
+                    <p>Somon și macrou proaspăt, afumat natural pentru o savoare delicată.</p>
+                </div>
+            </div>
+            
+            <!-- 3. Mușchiuleț Afumat -->
+            <div class="slide-item">
+                <img src="Muschiulet Afumat.jfif" alt="Mușchiuleț Afumat de Porc">
+                <!-- CAPTION MODIFICAT -->
+                <div class="slide-caption">
+                    <h3>Mușchiuleț Afumat de Porc</h3>
+                    <p>Carne fragedă de porc, afumată după metode vechi pentru o aromă bogată.</p>
+                </div>
+            </div>
+            
+            <!-- 4. Slănină Afumată -->
+            <div class="slide-item">
+                <img src="slanina afumata de casa.jfif" alt="Slănină Afumată de Casă">
+                <!-- CAPTION MODIFICAT -->
+                <div class="slide-caption">
+                    <h3>Slănină Afumată de Casă</h3>
+                    <p>Cea mai bună slănină, preparată și afumată cu grijă, exact ca la țară.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conținutul Text și Butoane (Poziționat deasupra overlay-ului) -->
+        <div class="hero-content p-6 md:p-12 max-w-4xl mx-auto relative z-40">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-text-light leading-tight mb-4 tracking-tight">
+                Gustul <span class="text-accent-warm">Tradiției</span> din Moldova și România
+            </h1>
+            <!-- TEXT CORECTAT: "Ca La Mama Acasă" cu ghilimele drepte -->
+            <p class="text-xl md:text-2xl text-text-light/90 mb-8 font-light">
+                Produse din carne și pește, proaspete și afumate, făcute **"Ca La Mama Acasă"**, livrate direct de la producătorul tău din Northampton.
+            </p>
+
+            <!-- Propoziție de vânzare unică (USP) - Direct de la Producător -->
+            <div class="bg-accent-warm/90 text-primary-dark p-4 rounded-lg shadow-2xl mb-8 transform hover:scale-[1.02] transition duration-300">
+                <p class="text-2xl font-bold flex items-center justify-center">
+                    ECONOMISEȘTE ACUM! 
+                    <!-- Simbolul Lirei cu animație CSS actualizată (Glow/Neon) -->
+                    <!-- <span class="pound-symbol">£</span>*/ -->
+                </p>
+                <p class="text-lg font-medium">Fără intermediari, fără adaosuri de magazine. **Prețuri cu mult sub concurență** în UK.</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="#" class="bg-accent-warm text-primary-dark font-bold py-3 px-8 rounded-full shadow-lg hover:bg-accent-warm/80 transition duration-300 transform hover:scale-105">
+                    VEZI OFERTA COMPLETĂ
+                </a>
+                <a href="#livrare" class="bg-text-light text-primary-dark font-bold py-3 px-8 rounded-full shadow-lg hover:bg-text-light/80 transition duration-300 transform hover:scale-105">
+                    DETALII LIVRARE RAPIDĂ
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Secțiunea 2: Avantajele (De ce să alegi "Tradiția"?) -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-primary-dark">
+        <div class="max-w-7xl mx-auto">
+            <!-- Titlu actualizat la "Tradiția" -->
+            <h2 class="text-4xl font-extrabold text-center mb-12 text-accent-warm animate-title-flash font-traditia">
+                "De ce să alegi Tradiția?"
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Beneficiu 1: Preț Mic -->
+                <div class="bg-secondary-maro p-6 rounded-xl shadow-xl border-t-4 border-accent-warm hover:shadow-2xl transition duration-300">
+                    <h3 class="text-2xl font-semibold mb-3">Preț de Producător</h3>
+                    <p class="text-text-light/80">Prin eliminarea distribuitorilor și magazinelor, îți garantăm cele mai mici prețuri pentru produse premium. Cumperi direct de la fabrica din Northampton!</p>
+                </div>
+                <!-- Beneficiu 2: Autenticitate -->
+                <div class="bg-secondary-maro p-6 rounded-xl shadow-xl border-t-4 border-accent-warm hover:shadow-2xl transition duration-300">
+                    <h3 class="text-2xl font-semibold mb-3">Rețete Tradiționale</h3>
+                    <p class="text-text-light/80">Folosim rețete autentice din România și Republica Moldova. Afumare naturală cu lemn, fără compromisuri la gust. Așa cum te-ai obișnuit acasă.</p>
+                </div>
+                <!-- Beneficiu 3: Livrare Rapidă Locală -->
+                <div id="livrare" class="bg-secondary-maro p-6 rounded-xl shadow-xl border-t-4 border-accent-warm hover:shadow-2xl transition duration-300">
+                    <h3 class="text-2xl font-semibold mb-3">Livrare În Aceeași Zi</h3>
+                    <p class="text-text-light/80">Comandă până la ora 15:00 și primești produsele acasă în Northampton/Northamptonshire, în aceeași zi, după ora 17:00-18:00. <span class="font-bold text-accent-warm">Proaspăt, Rapid, Local.</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Secțiunea 3: Produse și Patiserie (Meniul pe Scurt) -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-text-light text-primary-dark">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-12 text-accent-warm">Specialitățile Noastre</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card Produs 1 - Carne Afumată -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-[1.02] transition duration-300 relative">
+                    <div class="w-full h-48 bg-image-placeholder-bg flex items-center justify-center">
+                        <span class="text-text-light text-4xl font-bold">Carne Afumată</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-1">Cârnați de Casă Afumați</h3>
+                        <!-- Textul de descriere a fost actualizat (font-semibold adăugat) -->
+                        <p class="text-base font-semibold text-gray-800">Rețetă moldovenească, afumat lent cu lemn de fag. Ambalare: Vacum.</p>
+                        <p class="text-lg font-extrabold text-accent-warm mt-2">De la £5.99/kg</p>
+                    </div>
+                </div>
+                <!-- Card Produs 2 - Pește Afumat -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-[1.02] transition duration-300 relative">
+                    <div class="w-full h-48 bg-image-placeholder-bg flex items-center justify-center">
+                        <span class="text-text-light text-4xl font-bold">Pește Afumat</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-1">File de Pește Afumat</h3>
+                        <!-- Textul de descriere a fost actualizat (font-semibold adăugat) -->
+                        <p class="text-base font-semibold text-gray-800">Somon sau Macrou (disponibil proaspăt sau afumat). Ambalare: Caserolă.</p>
+                        <p class="text-lg font-extrabold text-accent-warm mt-2">Vezi Prețuri</p>
+                    </div>
+                </div>
+                <!-- Card Produs 3 - Plăcinte -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-[1.02] transition duration-300 relative">
+                    <div class="w-full h-48 bg-image-placeholder-bg flex items-center justify-center">
+                        <span class="text-text-light text-4xl font-bold">Plăcinte</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-1">"Plăcinte Ca La Mama Acasă"</h3>
+                        <!-- Textul de descriere a fost actualizat (font-semibold adăugat) -->
+                        <p class="text-base font-semibold text-gray-800">Cu brânză, cartofi sau varză. Făcute proaspăt, cu ingrediente simple, autentice.</p>
+                        <p class="text-lg font-extrabold text-accent-warm mt-2">£2.50/buc</p>
+                    </div>
+                </div>
+                <!-- Card Produs 4 - Carne Proaspătă -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-[1.02] transition duration-300 relative">
+                    <div class="w-full h-48 bg-image-placeholder-bg flex items-center justify-center">
+                        <span class="text-text-light text-4xl font-bold">Carne Proaspătă</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-1">Pachete de Carne Proaspătă</h3>
+                        <!-- Textul de descriere a fost actualizat (font-semibold adăugat) -->
+                        <p class="text-base font-semibold text-gray-800">Porc, vită, pasăre. Ambalate igienic în pungi de plastic sau caserole. Calitate garantată.</p>
+                        <p class="text-lg font-extrabold text-accent-warm mt-2">Cere Oferta Zilei</p>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-12">
+                <a href="#" class="inline-block bg-primary-dark text-text-light font-bold py-3 px-10 rounded-full shadow-xl border-2 border-primary-dark hover:border-accent-warm transition duration-300">
+                    EXPLOREAZĂ TOT MENIUL
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Secțiunea 4: Call to Action (Unde Ne Găsești) -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-secondary-maro">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-4 text-text-light">Suntem în Inima Comunității din Northampton!</h2>
+            <p class="text-xl mb-6 text-text-light/90">Vizitează punctul nostru de vânzare sau plasează o comandă rapidă online pentru livrare acasă.</p>
+            <!-- Adresa Secției de Producție/Magazin -->
+            <p class="text-lg font-semibold mb-8 text-accent-warm">Producție și Punct de Vânzare: 4b Pondwood Close, Moulton Park, Northampton, NN36RT</p>
+            <a href="#" class="bg-accent-warm text-primary-dark font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-accent-warm/80 transition duration-300 transform hover:scale-105">
+                PLASEAZĂ COMANDA ACUM
+            </a>
+        </div>
+    </section>
+
+    <!-- Subsol (Footer) -->
+    <footer class="bg-primary-dark border-t border-accent-warm/50 text-text-light/80 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap justify-between">
+            <!-- LOGO TRADITIA ȘI TEXT -->
+            <div class="w-full md:w-1/3 mb-6 md:mb-0">
+                <!-- LOGO REINTRODUS în footer -->
+                <div class="flex items-center mb-2">
+                    <img src="traditia.jfif" alt="Logo Tradiția" class="header-logo" style="width: 100px;">
+                    <span class="text-2xl font-traditia font-bold text-text-light">TRADIȚIA</span>
+                </div>
+                <p class="mt-2">Gustul autentic al produselor românești și moldovenești. De la producător, direct la tine acasă.</p>
+            </div>
+            <div class="w-full md:w-1/3 mb-6 md:mb-0">
+                <h4 class="text-xl font-bold text-text-light mb-3">Informații</h4>
+                <ul>
+                    <li><a href="#" class="hover:text-accent-warm">Politica de Livrare</a></li>
+                    <li><a href="#" class="hover:text-accent-warm">Termeni și Condiții</a></li>
+                    <li><a href="#" class="hover:text-accent-warm">Contact</a></li>
+                </ul>
+            </div>
+            <div class="w-full md:w-1/3">
+                <h4 class="text-xl font-bold text-text-light mb-3">Contact</h4>
+                <p>Email: contact@traditia.co.uk</p>
+                <p>Telefon: [Număr de Telefon]</p>
+                <p class="mt-2 text-sm">&copy; 2024 Tradiția. Toate drepturile rezervate.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script JavaScript pentru Slideshow (Roll-over) -->
+    <script>
+        // Array care va conține toate imaginile din slideshow
+        const slides = document.querySelectorAll('.hero-slideshow .slide-item'); // Selectăm acum .slide-item
+        let currentSlide = 0; // Indexul imaginii curente
+
+        /**
+         * Funcție care gestionează afișarea imaginii curente și ascunderea celorlalte.
+         */
+        function showSlide() {
+            // Ascunde toate imaginile prin ștergerea clasei 'active'
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Afișează imaginea curentă prin adăugarea clasei 'active'
+            slides[currentSlide].classList.add('active');
+        }
+
+        /**
+         * Funcție principală care trece la următoarea imagine.
+         */
+        function nextSlide() {
+            // Calculează indexul următor (revine la 0 după ultima imagine)
+            currentSlide = (currentSlide + 1) % slides.length; 
+            showSlide();
+        }
+
+        // Pornește slideshow-ul la încărcarea ferestrei
+        window.onload = function() {
+            // Afișează prima imagine imediat
+            showSlide();
+            // Setează intervalul de schimbare a imaginii (6000ms = 6 secunde)
+            setInterval(nextSlide, 6000); 
+        };
+    </script>
+
+</body>
+</html>
